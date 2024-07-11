@@ -36,5 +36,5 @@ Welcome to the School Management System App, a comprehensive solution for managi
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/school-management-system.git
+   git clone https://github.com/YaredAlex/School-management.git
    ```

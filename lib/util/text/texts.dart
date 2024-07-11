@@ -1,0 +1,56 @@
+import 'package:get/get.dart';
+
+class CTexts {
+  CTexts._();
+  static String get idHint => 'idHint'.tr;
+  static String get login => 'login'.tr;
+  static String get passwordHint => 'passwordHint'.tr;
+  static String get forgetPass => 'forgetPass'.tr;
+  static String get welcome => 'welcome'.tr;
+  static String get userName => 'userName'.tr;
+  static String get userSub => 'userSub'.tr;
+  static String get titleAcademics => "titleAcademics".tr;
+  static String get courseResult => "courseResult".tr;
+  static String get attendance => "attendance".tr;
+  static String get timeTable => "timeTable".tr;
+  static String get library => "library".tr;
+  static String get notice => "notice".tr;
+  static String get setting => "setting".tr;
+  static String get settingSubtitle => "settingSubtitle".tr;
+  static String get message => "message".tr;
+  static String get messageSubtitle => "messageSubtitle".tr;
+  static String get parentalService => "parentalService".tr;
+  static String get course => "courses".tr;
+  static String get search => "search".tr;
+  static String get myCourse => "myCourse".tr;
+  static String get absentDates => "absentDates".tr;
+  static String get addAccount => "addAccount".tr;
+  static String get profile => "profile".tr;
+  static String get examResult => "examResult".tr;
+  static String get about => "about".tr;
+  static String get home => "home".tr;
+  static String get notification => "notification".tr;
+  static String get generalSettings => "generalSettings".tr;
+  static String get language => "languages".tr;
+  static String get darkMode => "darkMode".tr;
+  static String get pushNotification => "pushNotifications".tr;
+  static String get accountSettings => "accountSettings".tr;
+  static String get changePassword => "changePassword".tr;
+  static String get updateProfile => "updateProfile".tr;
+  static String get academicSettings => "academicSettings".tr;
+  static String get academicYear => "academicYear".tr;
+  static String get classGrade => "classGrade".tr;
+  static String get appInformation => "appInformation".tr;
+  static String get privacyPolicy => "privacyPolicy".tr;
+  static String get termOfServices => "termOfServices".tr;
+  static String get selectPreferredLanguage => "selectPreferredLanguage".tr;
+  static String get togleDarkMode => "toggleDarkMode".tr;
+  static String get managePushNotification => "managePushNotification".tr;
+  static String get updateYourPassword => "updateYourPassword".tr;
+  static String get editYourPersonalAndContact =>
+      "editYourPersonalAndContact".tr;
+  static String get reviewTermAndPolicy => "reviewTermAndPolicy".tr;
+  static String get learnMoreAbout => "learnMoreAbout".tr;
+  static String passwordRecover = "Password recovery";
+  static String brithDate = "Birth Date";
+}

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the School Management System App, a comprehensive solution for managing school-related activities and information. This app is built using Flutter, aiming to provide a experience for students, teachers, parents, and administrators.
+Welcome to the School Management System App, a solution for managing school-related activities and information.
 
 ## Features
 
@@ -17,14 +17,7 @@ Welcome to the School Management System App, a comprehensive solution for managi
 - **School Announcements**: Post and view school-wide announcements.
 - **School Events**: Manage and view upcoming school events.
 - **Parent Portal**: Interface for parents to view their children's progress.
-- **Extracurricular Activity Tracking**: Manage and track extracurricular activities.
 - **Push Notifications**: Receive real-time updates and notifications.
-- **Transportation Tracking**: Track and manage school transportation.
-- **Multi-language Support**: Available in multiple languages.
-- **Accessibility Features**: Ensure the app is usable by everyone.
-- **Cloud Storage & Backup**: Securely store and back up data.
-
-## Installation
 
 ### Prerequisites
 

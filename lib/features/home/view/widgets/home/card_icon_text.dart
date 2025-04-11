@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/sizes.dart';
 
 class CardIconText extends StatelessWidget {

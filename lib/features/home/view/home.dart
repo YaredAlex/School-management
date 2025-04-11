@@ -3,112 +3,107 @@ import 'package:get/get.dart';
 import 'package:school_managment/common/widget/appbar/app_bar.dart';
 import 'package:school_managment/common/widget/grdi_view/grid_view.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
+import 'package:school_managment/features/home/controller/home/home_controller.dart';
 import 'package:school_managment/features/home/view/widgets/home/academics.dart';
 import 'package:school_managment/features/home/view/widgets/home/carousel.dart';
 import 'package:school_managment/features/home/view/widgets/home/notice_card.dart';
 import 'package:school_managment/features/setting/view/setting.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/image_constant.dart';
 import 'package:school_managment/util/sizes.dart';
-import 'package:school_managment/util/text/texts.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+  HomeScreen({super.key});
+  final homeController = Get.put(HomeController());
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Obx(
+      () => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CHeaderSection(
             height: CSizes.topBarHeight,
             childern: [
               CAppBar(
-                title: CTexts.userName,
+                title: homeController.currentStudent.value?.name,
+                showGreeting: true,
+                showProfile: true,
+                isLoading: homeController.isLoading.value,
               ),
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(horizontal: CSizes.defaultSpace),
-              //   child: Align(
-              //     alignment: Alignment.centerLeft,
-              //     child: Text(
-              //       "Hello John!",
-              //       style: Theme.of(context)
-              //           .textTheme
-              //           .headlineMedium!
-              //           .apply(color: Colors.white),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Get.isDarkMode
-                  ? CColors.backgroundDark
-                  : CColors.backgroundPrimary,
-            ),
-            child: Column(
-              children: [
-                //Body of home
-                //Carousel Image
-                ImageCarousel(),
-                //Acadamics
-                const Academics(),
-                const SizedBox(
-                  height: CSizes.defaultSpace,
-                ),
-                //Notice
-                const HomeNotice(),
-                const SizedBox(
-                  height: CSizes.defaultSpace,
-                ),
-                //parental service
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: CSizes.defaultSpace),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        CTexts.parentalService,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      SizedBox(
-                        height: 160,
-                        child: CGrideView(
-                          column: 2,
-                          childrenHeight: 150,
-                          children: [
-                            ParentalCard(
-                              onTap: () {
-                                Get.to(() => SettingsPage());
-                              },
-                              title: CTexts.setting,
-                              subtitle: CTexts.settingSubtitle,
-                              assetIcon: CImageConstant.settingIcon,
-                              backgroundColor: CColors.orange,
-                              circularBgColor: CColors.c2,
-                            ),
-                            ParentalCard(
-                              onTap: () {},
-                              title: CTexts.message,
-                              subtitle: CTexts.messageSubtitle,
-                              assetIcon: CImageConstant.messageIcon,
-                              backgroundColor: CColors.periwinkleBlue,
-                              circularBgColor: CColors.c1,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Get.isDarkMode
+                    ? CColors.backgroundDark
+                    : CColors.backgroundPrimary,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: AlwaysScrollableScrollPhysics(),
+                children: [
+                  //Body of home
+                  //Carousel Image
+                  ImageCarousel(),
+                  //Acadamics
+                  const Academics(),
+                  const SizedBox(
+                    height: CSizes.defaultSpace,
                   ),
-                )
-              ],
+                  //Notice
+                  const HomeNotice(),
+                  const SizedBox(
+                    height: CSizes.defaultSpace,
+                  ),
+                  //parental service
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: CSizes.defaultSpace),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          CTexts.parentalService,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        SizedBox(
+                          height: 160,
+                          child: CGrideView(
+                            column: 2,
+                            childrenHeight: 150,
+                            children: [
+                              ParentalCard(
+                                onTap: () {
+                                  Get.to(() => SettingsPage());
+                                },
+                                title: CTexts.setting,
+                                subtitle: CTexts.settingSubtitle,
+                                assetIcon: CImageConstant.settingIcon,
+                                backgroundColor: CColors.orange,
+                                circularBgColor: CColors.c2,
+                              ),
+                              ParentalCard(
+                                onTap: () {},
+                                title: CTexts.message,
+                                subtitle: CTexts.messageSubtitle,
+                                assetIcon: CImageConstant.messageIcon,
+                                backgroundColor: CColors.periwinkleBlue,
+                                circularBgColor: CColors.c1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

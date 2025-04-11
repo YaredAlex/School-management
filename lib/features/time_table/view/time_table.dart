@@ -5,7 +5,8 @@ import 'package:school_managment/common/widget/appbar/app_bar.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
 import 'package:school_managment/features/time_table/controller/time_table_controller.dart';
 import 'package:school_managment/features/time_table/model/time_table_model.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/sizes.dart';
 
 class TimeTableScreen extends StatelessWidget {
@@ -17,54 +18,47 @@ class TimeTableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CHeaderSection(
-              height: height,
-              childern: [
-                CAppBar(
-                  showLoading: false,
-                  title: "Time-table",
-                ),
-                // _buildDateSelector(context),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Get.isDarkMode
-                    ? CColors.backgroundDark
-                    : CColors.backgroundPrimary,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CHeaderSection(
+            height: height,
+            childern: [
+              CAppBar(
+                showLeading: false,
+                title: CTexts.timeTable,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ///
-                  ///Obx(() => ListView(
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: CSizes.defaultSpace),
-                    child: Container(
-                      color: Get.isDarkMode
-                          ? CColors.backgroundDark
-                          : Colors.white,
-                      child: Column(
-                        children:
-                            controller.weeklyTimeTable.entries.map((entry) {
-                          return _buildDayExpansionTile(
-                              context: context,
-                              day: entry.key,
-                              entries: entry.value);
-                        }).toList(),
-                      ),
-                    ),
+              // _buildDateSelector(context),
+            ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Get.isDarkMode
+                  ? CColors.backgroundDark
+                  : CColors.backgroundPrimary,
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: CSizes.defaultSpace),
+              child: Container(
+                color: Get.isDarkMode ? CColors.backgroundDark : Colors.white,
+                child: RefreshIndicator(
+                  onRefresh: controller.onRefresh,
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    children: controller.weeklyTimeTable.entries.map((entry) {
+                      return _buildDayExpansionTile(
+                          context: context,
+                          day: entry.key,
+                          entries: entry.value);
+                    }).toList(),
                   ),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

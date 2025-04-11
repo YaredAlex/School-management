@@ -5,90 +5,93 @@ import 'package:school_managment/common/widget/custom_tile/custom_tile.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
 import 'package:school_managment/features/course/controller/course_result_controller.dart';
 import 'package:school_managment/features/course/view/widget/container_wrapper.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/sizes.dart';
 
 class CourseResultScreen extends StatelessWidget {
-  CourseResultScreen({super.key, required this.courseId});
+  CourseResultScreen({super.key});
   final double height = CSizes.topBarHeight;
-  final int courseId;
-  final controller = Get.put(CourseResultController());
+  CourseResultController resultController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
           Get.isDarkMode ? CColors.backgroundDark : CColors.backgroundPrimary,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CHeaderSection(
-              height: height,
-              childern: [
-                CAppBar(
-                  showLoading: false,
-                  title: "Course result",
-                ),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Get.isDarkMode
-                    ? CColors.backgroundDark
-                    : CColors.backgroundPrimary,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //course result
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: CSizes.defaultSpace),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // _buildCourseSelector(),
-                        _buildSemesterSelector(),
-                        CContainer(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildSectionTitle('Daily Activities', context),
-                              _buildDailyActivities(context: context),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        CContainer(
-                            bgColor: CColors.lightBlue,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionTitle('Quizzes', context),
-                                _buildQuizzes(),
-                              ],
-                            )),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        CContainer(
-                            bgColor: CColors.lightPurple,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionTitle('Tests', context),
-                                _buildTests(),
-                              ],
-                            )),
-                      ],
-                    ),
-                  )
+      body: RefreshIndicator(
+        onRefresh: resultController.onRefresh,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CHeaderSection(
+                height: height,
+                childern: [
+                  CAppBar(
+                    showLeading: false,
+                    title: CTexts.courseResult,
+                  ),
                 ],
               ),
-            ),
-          ],
+              Container(
+                decoration: BoxDecoration(
+                  color: Get.isDarkMode
+                      ? CColors.backgroundDark
+                      : CColors.backgroundPrimary,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //course result
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: CSizes.defaultSpace),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // _buildCourseSelector(),
+                          _buildSemesterSelector(),
+                          CContainer(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildSectionTitle('Daily Activities', context),
+                                _buildDailyActivities(context: context),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          CContainer(
+                              bgColor: CColors.lightBlue,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildSectionTitle('Quizzes', context),
+                                  _buildQuizzes(),
+                                ],
+                              )),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          CContainer(
+                              bgColor: CColors.lightPurple,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildSectionTitle('Tests', context),
+                                  _buildTests(),
+                                ],
+                              )),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -98,15 +101,14 @@ class CourseResultScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: DropdownButton<String>(
-        value: controller.selectedCourse.value,
+        value: resultController.selectedCourse.value,
         onChanged: (String? newValue) {
-          if (newValue != null) controller.changeCourse(newValue);
+          if (newValue != null) resultController.changeCourse(newValue);
         },
-        items: controller.courses
-            .map<DropdownMenuItem<String>>((Map<String, dynamic> value) {
+        items: resultController.courses.map<DropdownMenuItem<String>>((value) {
           return DropdownMenuItem<String>(
-            value: value['course'],
-            child: Text(value['course']),
+            value: value.courseName,
+            child: Text(value.courseName),
           );
         }).toList(),
       ),
@@ -121,14 +123,14 @@ class CourseResultScreen extends StatelessWidget {
         children: [
           Expanded(
             child: TextButton(
-              onPressed: () => controller.changeSemester(1),
+              onPressed: () => resultController.changeSemester(1),
               child: Text('Semester 1'),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: TextButton(
-              onPressed: () => controller.changeSemester(2),
+              onPressed: () => resultController.changeSemester(2),
               child: Text('Semester 2'),
             ),
           ),
@@ -148,9 +150,10 @@ class CourseResultScreen extends StatelessWidget {
   }
 
   Widget _buildDailyActivities({required BuildContext context}) {
-    final activities = controller.courseResults[controller.selectedCourse.value]
-            ?['semester${controller.selectedSemester.value}']['dailyActivities']
-        as List<dynamic>?;
+    final activities =
+        resultController.courseResults[resultController.selectedCourse.value]
+                ?['semester${resultController.selectedSemester.value}']
+            ['dailyActivities'] as List<dynamic>?;
 
     if (activities == null || activities.isEmpty) {
       return const Center(child: Text('No daily activities recorded'));
@@ -175,9 +178,10 @@ class CourseResultScreen extends StatelessWidget {
   }
 
   Widget _buildQuizzes() {
-    final quizzes = controller.courseResults[controller.selectedCourse.value]
-            ?['semester${controller.selectedSemester.value}']['quizzes']
-        as List<dynamic>?;
+    final quizzes =
+        resultController.courseResults[resultController.selectedCourse.value]
+                ?['semester${resultController.selectedSemester.value}']
+            ['quizzes'] as List<dynamic>?;
 
     if (quizzes == null || quizzes.isEmpty) {
       return Center(child: Text('No quizzes recorded'));
@@ -203,9 +207,10 @@ class CourseResultScreen extends StatelessWidget {
   }
 
   Widget _buildTests() {
-    final tests = controller.courseResults[controller.selectedCourse.value]
-            ?['semester${controller.selectedSemester.value}']['tests']
-        as List<dynamic>?;
+    final tests =
+        resultController.courseResults[resultController.selectedCourse.value]
+                ?['semester${resultController.selectedSemester.value}']['tests']
+            as List<dynamic>?;
 
     if (tests == null || tests.isEmpty) {
       return Center(child: Text('No tests recorded'));

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:school_managment/features/attendace/view/attendance.dart';
 import 'package:school_managment/features/course/view/course.dart';
 import 'package:school_managment/features/home/view/widgets/home/card_icon_text.dart';
 import 'package:school_managment/features/library/view/library.dart';
 import 'package:school_managment/features/time_table/view/time_table.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/image_constant.dart';
+import 'package:school_managment/util/routes/routes.dart';
 import 'package:school_managment/util/sizes.dart';
-import 'package:school_managment/util/text/texts.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 
 class Academics extends StatelessWidget {
   const Academics({
@@ -53,7 +53,7 @@ class Academics extends StatelessWidget {
                   backgroundColor: CColors.lightRed,
                   title: CTexts.attendance,
                   onClick: () {
-                    Get.to(() => AttendanceScreen());
+                    Get.toNamed(CRoutes.attendance);
                   },
                 ),
                 CardIconText(

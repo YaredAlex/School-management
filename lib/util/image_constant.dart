@@ -24,4 +24,6 @@ class CImageConstant {
   static const String histroyIcon = "assets/images/history_icon.png";
   static const String socialIcon = "assets/images/social_icon.png";
   static const String courseIcon = "assets/images/book_icon.png";
+  static const String avatarM = "assets/images/avatar_male.png";
+  static const String avatarF = "assets/images/avatar_female.png";
 }

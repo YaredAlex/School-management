@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:school_managment/common/widget/appbar/app_bar.dart';
-import 'package:school_managment/common/widget/grdi_view/grid_view.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
 import 'package:school_managment/features/gallery/controller/gallery_controller.dart';
 import 'package:school_managment/features/gallery/view/full_screen_view.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/sizes.dart';
 
 class GalleryScreen extends StatelessWidget {
@@ -23,8 +23,8 @@ class GalleryScreen extends StatelessWidget {
               height: CSizes.topBarHeight,
               childern: [
                 CAppBar(
-                  title: "Gallery",
-                  showLoading: false,
+                  title: CTexts.gallary,
+                  showLeading: false,
                 ),
               ],
             ),
@@ -35,23 +35,24 @@ class GalleryScreen extends StatelessWidget {
                     : CColors.backgroundPrimary,
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: CSizes.defaultSpace),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: CSizes.defaultSpace),
                 child: Column(
                   children: [
                     Obx(() => ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.events.length,
                           itemBuilder: (context, index) {
                             final event = controller.events[index];
                             return Card(
                               elevation: 0,
-                              margin: EdgeInsets.only(bottom: 16),
+                              margin: const EdgeInsets.only(bottom: 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -62,14 +63,14 @@ class GalleryScreen extends StatelessWidget {
                                               .textTheme
                                               .titleLarge,
                                         ),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Text(
                                           'Date: ${event['date']}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         Text(event['description']),
                                       ],
                                     ),

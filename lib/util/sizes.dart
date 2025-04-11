@@ -14,5 +14,5 @@ class CSizes {
 
   static const double lgCardHeight = 200.0;
   static const double mdCardHeight = 150.0;
-  static const double topBarHeight = kToolbarHeight + 40;
+  static const double topBarHeight = kToolbarHeight + 60;
 }

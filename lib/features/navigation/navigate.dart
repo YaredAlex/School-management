@@ -9,7 +9,9 @@ class NavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CDrawer(),
+      drawer: CDrawer(
+        isLoading: false,
+      ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
           height: 70,

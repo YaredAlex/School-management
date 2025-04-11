@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:school_managment/features/setting/controller/setting_controller.dart';
-import 'package:school_managment/util/colors/colors.dart';
-import 'package:school_managment/util/text/texts.dart';
+import 'package:school_managment/features/setting/view/widget/change_password.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
+import 'package:school_managment/util/device/device.dart';
 
 class SettingsPage extends StatelessWidget {
   final SettingsController controller = Get.put(SettingsController());
 
   SettingsPage({super.key});
   final iconPadding = 4.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Get.isDarkMode ? CColors.backgroundDark : Colors.white,
       appBar: AppBar(
-        shape: Border(
-            bottom: BorderSide(
-                color:
-                    Get.isDarkMode ? CColors.borderDark : CColors.borderLight)),
+        shape: Border(bottom: BorderSide(color: getDividerColor())),
         title: Text(CTexts.setting),
       ),
       body: SingleChildScrollView(
@@ -29,30 +29,37 @@ class SettingsPage extends StatelessWidget {
                 title: CTexts.generalSettings, context: context),
             _buildSettingsCard([
               ListTile(
-                  leading: Icon(Icons.language),
-                  title: Text(
-                    CTexts.language,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  subtitle: Text(CTexts.selectPreferredLanguage),
-                  trailing: Obx(() => DropdownButton<String>(
-                        value: controller.language.value,
-                        onChanged: (String? newValue) {
-                          if (newValue != null)
-                            controller.changeLanguage(newValue);
-                        },
-                        items: <Map<String, String>>[
-                          {'code': 'en', 'name': 'English'},
-                          {'code': 'am', 'name': 'Amharic'},
-                          {'code': 'om', 'name': 'Oromifa'},
-                        ].map<DropdownMenuItem<String>>(
+                leading: const Icon(Icons.language),
+                title: Text(
+                  CTexts.language,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                subtitle: Text(CTexts.selectPreferredLanguage),
+                trailing: SizedBox(
+                  child: DropdownButtonHideUnderline(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: SizedBox(
+                        child: DropdownButton<String>(
+                          value: controller.language.value,
+                          onChanged: controller.changeLanguage,
+                          items: controller.availableLanguage
+                              .map<DropdownMenuItem<String>>(
                             (Map<String, String> language) {
-                          return DropdownMenuItem<String>(
-                            value: language['code'],
-                            child: Text(language['name']!),
-                          );
-                        }).toList(),
-                      ))),
+                              return DropdownMenuItem<String>(
+                                value: language['code'],
+                                child: Text(language['name']!),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Dark Mode Switch
               Obx(() => SwitchListTile(
                     secondary: const Icon(
                       Icons.dark_mode_outlined,
@@ -65,6 +72,8 @@ class SettingsPage extends StatelessWidget {
                     value: controller.darkMode.value,
                     onChanged: controller.toggleDarkMode,
                   )),
+
+              // Notifications Switch
               Obx(
                 () => SwitchListTile(
                   secondary: const Icon(
@@ -80,33 +89,28 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
             ]),
-            Divider(
-                color:
-                    Get.isDarkMode ? CColors.borderDark : CColors.borderLight),
+            Divider(color: getDividerColor()),
             _buildSectionHeader(
                 title: CTexts.accountSettings, context: context),
             _buildSettingsCard([
+              // User Role Tile
               ListTile(
-                leading: Icon(Icons.person_outline),
+                leading: const Icon(Icons.person_outline),
                 title: Text(
-                  'User Role',
+                  'User',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                trailing: Obx(() => DropdownButton<String>(
-                      value: controller.userRole.value,
-                      onChanged: (String? newValue) {
-                        if (newValue != null)
-                          controller.changeUserRole(newValue);
-                      },
-                      items: <String>['Student', 'Teacher', 'Admin']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                trailing: Obx(() => SizedBox(
+                      width: 100,
+                      child: Text(
+                        "${controller.userRole.value}",
+                        textAlign: TextAlign.end,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     )),
               ),
+
+              // Change Password Tile
               ListTile(
                 leading: const Icon(Iconsax.key),
                 title: Text(
@@ -114,9 +118,14 @@ class SettingsPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 subtitle: Text(CTexts.updateYourPassword),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => Get.toNamed('/changePassword'),
+                trailing: const SizedBox(
+                  width: 30,
+                  child: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
+                onTap: () => Get.to(() => ChangePasswordPage()),
               ),
+
+              // Update Profile Tile
               ListTile(
                 leading: const Icon(Icons.person_outline),
                 title: Text(
@@ -124,40 +133,57 @@ class SettingsPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 subtitle: Text(CTexts.editYourPersonalAndContact),
-                trailing: const Icon(Icons.arrow_forward_ios),
+                trailing: const SizedBox(
+                  width: 30,
+                  child: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
                 onTap: () => Get.toNamed('/updateProfile'),
               ),
             ]),
-            Divider(
-                color:
-                    Get.isDarkMode ? CColors.borderDark : CColors.borderLight),
+            Divider(color: getDividerColor()),
             _buildSectionHeader(
                 title: CTexts.academicSettings, context: context),
             _buildSettingsCard([
+              // Academic Year Tile
               ListTile(
-                leading: Icon(Iconsax.calendar),
+                leading: const Icon(Iconsax.calendar),
                 title: Text(
                   CTexts.academicYear,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                trailing: Obx(() => Text(controller.academicYear.value)),
+                trailing: Obx(() => SizedBox(
+                      width: 100,
+                      child: Text(
+                        controller.academicYear.value,
+                        textAlign: TextAlign.end,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )),
                 onTap: () => controller.changeAcademicYear(),
               ),
+
+              // Class Grade Tile
               ListTile(
-                leading: Icon(Icons.grade_outlined),
+                leading: const Icon(Icons.grade_outlined),
                 title: Text(
                   CTexts.classGrade,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                trailing: Obx(() => Text(controller.classGrade.value)),
+                trailing: Obx(() => SizedBox(
+                      width: 100,
+                      child: Text(
+                        controller.classGrade.value,
+                        textAlign: TextAlign.end,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )),
                 onTap: () => controller.changeClassGrade(),
               ),
             ]),
-            Divider(
-                color:
-                    Get.isDarkMode ? CColors.borderDark : CColors.borderLight),
+            Divider(color: getDividerColor()),
             _buildSectionHeader(title: CTexts.appInformation, context: context),
             _buildSettingsCard([
+              // Privacy Policy Tile
               ListTile(
                 leading: Padding(
                   padding: EdgeInsets.symmetric(horizontal: iconPadding),
@@ -168,9 +194,14 @@ class SettingsPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 subtitle: Text(CTexts.reviewTermAndPolicy),
-                trailing: Icon(Icons.arrow_forward_ios),
+                trailing: const SizedBox(
+                  width: 30,
+                  child: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
                 onTap: () => Get.toNamed('/privacyPolicy'),
               ),
+
+              // Terms of Service Tile
               ListTile(
                 leading: Padding(
                   padding: EdgeInsets.symmetric(horizontal: iconPadding),
@@ -181,9 +212,14 @@ class SettingsPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 subtitle: Text(CTexts.learnMoreAbout),
-                trailing: Icon(Icons.arrow_forward_ios),
+                trailing: const SizedBox(
+                  width: 30,
+                  child: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
                 onTap: () => Get.toNamed('/termsOfService'),
               ),
+
+              // About Tile
               ListTile(
                 leading: Padding(
                   padding: EdgeInsets.symmetric(horizontal: iconPadding),
@@ -193,20 +229,14 @@ class SettingsPage extends StatelessWidget {
                   CTexts.about,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                trailing: Icon(Icons.arrow_forward_ios),
+                trailing: const SizedBox(
+                  width: 30,
+                  child: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
                 onTap: () => Get.toNamed('/about'),
               ),
             ]),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: controller.logout,
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: Colors.red,
-            //     padding:
-            //         const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-            //   ),
-            //   child: const Text('Logout'),
-            // ),
           ],
         ),
       ),

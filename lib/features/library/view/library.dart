@@ -6,7 +6,8 @@ import 'package:school_managment/common/widget/header_section/header_section.dar
 import 'package:school_managment/features/library/controller/library_controller.dart';
 import 'package:school_managment/features/library/model/books.dart';
 import 'package:school_managment/features/library/view/book_card.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/sizes.dart';
 
 class LibraryScreen extends StatelessWidget {
@@ -24,8 +25,8 @@ class LibraryScreen extends StatelessWidget {
               height: height,
               childern: [
                 CAppBar(
-                  showLoading: false,
-                  title: "Library",
+                  showLeading: false,
+                  title: CTexts.library,
                 ),
                 Padding(
                     padding: const EdgeInsets.only(

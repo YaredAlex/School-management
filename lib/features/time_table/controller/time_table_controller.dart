@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:school_managment/features/auth/controller/user_controller.dart';
 import 'package:school_managment/features/time_table/model/time_table_model.dart';
+import 'package:school_managment/util/constants/api_endpoints/api_endpoints.dart';
+import 'package:school_managment/util/controller/api_controller.dart';
 
 class TimeTableController extends GetxController {
   final Rx<DateTime> selectedDate = DateTime.now().obs;
@@ -11,7 +14,8 @@ class TimeTableController extends GetxController {
 
   final RxMap<String, List<TimeTableEntry>> weeklyTimeTable =
       <String, List<TimeTableEntry>>{}.obs;
-
+  UserController userController = Get.find();
+  ApiController apiController = Get.find();
   @override
   void onInit() {
     super.onInit();
@@ -42,5 +46,19 @@ class TimeTableController extends GetxController {
       ],
       // Add entries for other days...
     };
+  }
+
+  Future<void> onRefresh() async {
+    // fetchTimeTable();
+  }
+
+  Future<void> fetchTimeTable() async {
+    try {
+      final response = await apiController.request(
+          endpoint: CAPIEndPoint.baseUrl, method: 'GET');
+      debugPrint(response);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

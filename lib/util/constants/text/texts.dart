@@ -51,6 +51,21 @@ class CTexts {
       "editYourPersonalAndContact".tr;
   static String get reviewTermAndPolicy => "reviewTermAndPolicy".tr;
   static String get learnMoreAbout => "learnMoreAbout".tr;
+  static String get dateOfAdission => "dataOfAdmission".tr;
+  static String get fatherName => 'fatherName'.tr;
+  static String get motherName => 'motherName'.tr;
+  static String get dateOfBirth => 'dateOfBirth'.tr;
+  static String get age => 'age'.tr;
+  static String get parentPhone => 'parentPhone'.tr;
+  static String get address => 'address'.tr;
+  static String get phoneNumber => 'phoneNumber'.tr;
   static String passwordRecover = "Password recovery";
-  static String brithDate = "Birth Date";
+  static String get brithDate => "Birth Date";
+  static String get unauthorizedError => 'unauthorizedError'.tr;
+  static String get gallary => "gallery".tr;
+  static String get gradeReport => "gradeReport".tr;
+  static String get parentInformation => 'parentInformation'.tr;
+  static String get academicInformation => 'academicInformation'.tr;
+  static String get personalInformation => 'personalInformation'.tr;
+  static String get section => 'section'.tr;
 }

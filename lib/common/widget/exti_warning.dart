@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:school_managment/features/home/view/home.dart';
 
 class ExitWarning extends StatelessWidget {
-  const ExitWarning({super.key});
-
+  ExitWarning({super.key, required this.child});
+  final Widget child;
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -40,7 +40,7 @@ class ExitWarning extends StatelessWidget {
           }
         }
       },
-      child: const HomeScreen(),
+      child: child,
     );
   }
 }

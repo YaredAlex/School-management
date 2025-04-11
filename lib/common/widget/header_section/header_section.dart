@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:school_managment/common/widget/cliper/custom_cliper.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 
 class CHeaderSection extends StatelessWidget {
   const CHeaderSection({
@@ -27,8 +26,14 @@ class CHeaderSection extends StatelessWidget {
           children: [
             Column(children: childern),
             //appBar,
-            const Positioned(right: -90, top: -60, child: CircularContainer()),
-            const Positioned(right: -90, top: 70, child: CircularContainer()),
+            const Positioned(
+                right: -90,
+                top: -60,
+                child: IgnorePointer(child: CircularContainer())),
+            const Positioned(
+                right: -90,
+                top: 70,
+                child: IgnorePointer(child: CircularContainer())),
             Positioned(
                 bottom: 0,
                 left: 0,

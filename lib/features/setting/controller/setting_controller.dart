@@ -16,6 +16,12 @@ class SettingsController extends GetxController {
   // Academic Settings
   final RxString academicYear = '2023-2024'.obs;
   final RxString classGrade = '10th Grade'.obs;
+  var language = 'en'.obs;
+  final List<Map<String, String>> availableLanguage = <Map<String, String>>[
+    {'code': 'en', 'name': 'English'},
+    {'code': 'am', 'name': 'Amharic'},
+    {'code': 'om', 'name': 'Oromifa'},
+  ];
 
   @override
   void onInit() {
@@ -26,13 +32,12 @@ class SettingsController extends GetxController {
 
   Future<void> clearSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    print('Shared preferences cleared');
   }
 
-  var language = 'en'.obs;
-
-  void changeLanguage(String langCode) {
+  void changeLanguage(String? langCode) {
+    if (langCode == null) {
+      return;
+    }
     language.value = langCode;
     switch (langCode) {
       case 'en':
@@ -51,7 +56,7 @@ class SettingsController extends GetxController {
   Future<void> loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     darkMode.value = prefs.getBool('darkMode') ?? false;
-    language.value = prefs.getString('language') ?? 'English';
+    language.value = prefs.getString('language') ?? 'en';
     pushNotifications.value = prefs.getBool('pushNotifications') ?? true;
     emailNotifications.value = prefs.getBool('emailNotifications') ?? true;
     userRole.value = prefs.getString('userRole') ?? 'Student';

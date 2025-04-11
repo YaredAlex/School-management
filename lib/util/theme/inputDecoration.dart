@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 
 class CInputDecoration {
   CInputDecoration._();

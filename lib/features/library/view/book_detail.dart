@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:school_managment/features/library/model/books.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 
 class BookDetailPage extends StatelessWidget {
   final Book book;

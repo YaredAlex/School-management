@@ -1,42 +1,47 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:school_managment/util/image_constant.dart';
+import 'package:school_managment/common/widget/error/show_error.dart';
+import 'package:school_managment/features/auth/controller/user_controller.dart';
+import 'package:school_managment/features/course/controller/course_controller.dart';
+import 'package:school_managment/features/course/model/courses.dart';
+import 'package:school_managment/util/constants/api_endpoints/api_endpoints.dart';
+import 'package:school_managment/util/controller/api_controller.dart';
 
 class CourseResultController extends GetxController {
+  final int courseId;
+  CourseResultController({required this.courseId});
+  RxBool isLoading = RxBool(true);
+  UserController userController = Get.find();
+  ApiController apiController = Get.find();
+  CourseController courseController = Get.find();
   RxString selectedCourse = 'Mathematics'.obs;
   RxInt selectedSemester = 1.obs;
+  void onInit() {
+    super.onInit();
+    fetchResult(courseId, userController.currentStudent.value?.id);
+  }
 
-  final List<Map<String, dynamic>> courses = [
-    {
-      'course': 'Mathematics',
-      'id': 1,
-      'img': '',
-    },
-    {
-      'course': 'Amharic',
-      'id': 2,
-      'img': '',
-    },
-    {
-      'course': 'History',
-      'id': 3,
-      'img': '',
-    },
-    {
-      'course': 'English',
-      'id': 4,
-      'img': '',
-    },
-    {
-      'course': 'Biology',
-      'id': 5,
-      'img': '',
-    },
-    {
-      'course': 'IT',
-      'id': 6,
-      'img': '',
-    },
-  ];
+  List<Course> get courses => courseController.courses;
+  Future<void> onRefresh() async {
+    fetchResult(courseId, userController.currentStudent.value?.id);
+  }
+
+  Future<void> fetchResult(int courseId, int? studentId) async {
+    isLoading.value = true;
+    try {
+      final response = await apiController
+          .request(endpoint: CAPIEndPoint.courseResult, method: 'POST', data: {
+        'course_id': courseId,
+        'student_id': studentId,
+      });
+      debugPrint('$response');
+    } catch (e) {
+      showErrorPopup(e.toString());
+      debugPrint(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   final Map<String, Map<String, dynamic>> courseResults = {
     'Mathematics': {
@@ -73,7 +78,6 @@ class CourseResultController extends GetxController {
         ],
       },
     },
-    // Add more courses here...
   };
 
   void changeCourse(String course) {
@@ -82,36 +86,5 @@ class CourseResultController extends GetxController {
 
   void changeSemester(int semester) {
     selectedSemester.value = semester;
-  }
-
-  String getCourseAssetImage(String course) {
-    switch (course) {
-      case 'english':
-        return CImageConstant.englishIcon;
-      case 'math':
-      case 'mathematics':
-        return CImageConstant.mathIcon;
-      case 'physics':
-        return CImageConstant.physicsIcon;
-      case 'civic':
-        return "";
-      case 'amharic':
-        return CImageConstant.amharicIcon;
-      case 'chemistry':
-        return CImageConstant.chemistryIcon;
-      case 'biology':
-        return CImageConstant.biologyIcon;
-      case 'physical sport':
-        return CImageConstant.sportIcon;
-      case 'science':
-        return CImageConstant.socialIcon;
-      case 'it':
-      case 'computer':
-        return CImageConstant.computerIcon;
-      case 'history':
-        return CImageConstant.histroyIcon;
-      default:
-        return CImageConstant.courseIcon;
-    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_managment/util/colors/colors.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/theme/appbar_theme.dart';
 import 'package:school_managment/util/theme/button_theme.dart';
 import 'package:school_managment/util/theme/inputDecoration.dart';

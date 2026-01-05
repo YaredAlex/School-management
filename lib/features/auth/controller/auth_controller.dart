@@ -1,142 +1,115 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:school_managment/common/widget/error/show_error.dart';
-import 'package:school_managment/features/auth/controller/user_controller.dart';
+import 'package:school_managment/features/auth/model/student.dart';
 import 'package:school_managment/features/auth/model/user.dart';
 import 'package:school_managment/util/constants/api_endpoints/api_endpoints.dart';
-import 'package:school_managment/util/controller/api_controller.dart';
 import 'package:school_managment/util/routes/routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:school_managment/util/services/api_controller.dart';
 
 class AuthController extends GetxController {
-  final ApiController apiController = Get.find<ApiController>();
-  final UserController userController = Get.find<UserController>();
   RxnString accessToken = RxnString();
   RxnString refreshToken = RxnString();
-  RxBool obscureText = RxBool(true);
-  RxnString _phone = RxnString();
-  RxnString _password = RxnString();
   RxBool isAuthenticated = false.obs;
   RxBool isLoading = false.obs;
   RxnString errorMessage = RxnString();
-
-  String? get phone => _phone.value;
-  String? get password => _password.value;
-  set phone(String? value) {
-    _phone.value = value;
-  }
-
-  set password(String? value) {
-    _password.value = value;
-  }
-
+  final currentParent = Rxn<User>();
+  final students = Rxn<List<StudentModel>>(null);
+  final currentStudent = Rxn<StudentModel>();
+  final isStudentInitialized = RxBool(false);
   @override
   void onInit() {
     super.onInit();
-    _loadTokens();
   }
 
-  // Load JWT tokens from local storage
-  Future<void> _loadTokens() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    accessToken.value = prefs.getString("token");
-    refreshToken.value = prefs.getString("refresh_token");
-    isAuthenticated.value = accessToken.value != null;
-    // if (isAuthenticated.value) Get.offAllNamed(CRoutes.home);
-  }
-
-  // Save tokens after login or refresh
-  Future<void> _saveTokens(
-      String newAccessToken, String newRefreshToken) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (newAccessToken.isNotEmpty) {
-      await prefs.setString("token", newAccessToken);
-      accessToken.value = newAccessToken;
-      isAuthenticated.value = true;
-    }
-    if (newRefreshToken.isNotEmpty) {
-      await prefs.setString("refresh_token", newRefreshToken);
-      refreshToken.value = newRefreshToken;
-    }
-  }
-
-  // Remove tokens on logout
-  Future<void> logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final response = await apiController.request(
-        endpoint: CAPIEndPoint.logout, method: "POST");
-    await prefs.remove("token");
-    await prefs.remove("refresh_token");
-    accessToken.value = "";
-    refreshToken.value = "";
-    isAuthenticated.value = false;
-    Get.offAllNamed(CRoutes.signin);
-  }
-
-  // Login function
-  Future<void> login(String? phone, String? password) async {
-    isLoading.value = true;
-    errorMessage.value = null;
-    debugPrint('$phone');
+  Future<dynamic> fetchUserProfile() async {
     try {
-      final response = await apiController.request(
-        endpoint: CAPIEndPoint.login,
-        method: "POST",
-        data: {
-          "phone_number": phone!.substring(4),
-          "password": password,
-        },
-        useToken: false,
+      isLoading.value = true;
+      var response = await ApiService().get(
+        CAPIEndPoint.profile,
       );
-      // success logic
-      accessToken.value = response["token"] as String?;
-      //bind token to apirequests
-      apiController.bindAccessToken(accessToken);
-      _saveTokens(accessToken.value ?? "", response['refresh_token'] ?? "");
-      userController.currentParent.value = User.fromJson(response['user']);
-      Get.offAllNamed(CRoutes.home);
+      if (response != null) {
+        currentParent.value = User.fromJson(response);
+      }
+      return response;
     } catch (e) {
-      errorMessage.value = e.toString();
-      print("Error logging in $e");
+      showErrorPopup(e.toString());
+      return e;
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> checkCredential() async {
+  Future<void> fetchStudents() async {
     try {
-      await _loadTokens();
-      if (accessToken.value != null) {
-        apiController.bindAccessToken(accessToken);
-        await userController.fetchUserProfile();
-        //if success full fetching parent/userprofile goto home
-        Get.offAllNamed(CRoutes.home);
-      } else {
-        return Get.offAllNamed(CRoutes.signin);
+      isLoading.value = true;
+      var response = await ApiService().get(
+        CAPIEndPoint.parentStudents,
+      );
+      if (response != null) {
+        var result = response as List<dynamic>;
+        debugPrint("students are $result");
+        List<Map<String, dynamic>> data = result.cast<Map<String, dynamic>>();
+        final allSibilings = <StudentModel>[];
+        for (var s in data) {
+          allSibilings.add(StudentModel.fromJson(s));
+        }
+        currentStudent.value =
+            allSibilings.isNotEmpty ? allSibilings.first : null;
+        isStudentInitialized.value =
+            currentStudent.value == null ? false : true;
+        students.value = allSibilings;
+
+        // print("all student is $allSibilings");
       }
     } catch (e) {
-      if (e.toString() == 'User not authenticated') {
-        return Get.offAllNamed(CRoutes.signin);
-      }
       showErrorPopup(e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // Refresh token method
-  Future<bool> refreshAccessToken() async {
-    if (refreshToken.value != null) return false;
-    var response = await apiController.request(
-      endpoint: "/auth/refresh",
-      method: "POST",
-      data: {"refresh_token": refreshToken.value},
-    );
+  void clearUser() {
+    currentParent.value = null;
+  }
 
-    if (response != null && response["token"] != null) {
-      await _saveTokens(response["token"], refreshToken.value ?? "");
-      return true;
-    } else {
-      logout();
-      return false;
+  // LOGOUT
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+      await ApiService().removeToken();
+      Get.offAllNamed(CRoutes.signin);
+    } catch (e) {
+      showErrorPopup(e.toString());
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  // Check login on app start
+  Future<void> checkCredential() async {
+    await fetchUserProfile();
+    Get.offAllNamed(CRoutes.home);
+  }
+
+  // REFRESH TOKEN
+  Future<bool> refreshAccessToken() async {
+    if (refreshToken.value == null) return false;
+    try {
+      final response = await ApiService().post(
+        "/api/user/refresh",
+        data: {"refresh_token": refreshToken.value},
+      );
+
+      if (response != null && response["token"] != null) {
+        ApiService().saveToken(response["token"], refreshToken.value ?? "");
+        return true;
+      }
+    } catch (e) {
+      debugPrint("Refresh token failed: $e");
+    }
+
+    logout();
+    return false;
   }
 }

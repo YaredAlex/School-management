@@ -8,7 +8,7 @@ class CLanguages extends Translations {
           'login': 'Login',
           'passwordHint': 'Password',
           'forgetPass': 'Forget Password?',
-          'welcome': 'Welcome to School Information Management System',
+          'welcome': 'Welcome To Century Academy The Power Of Change',
           'userName': 'John Snow',
           'userSub': 'Class 2B | roll no 20',
           'titleAcademics': 'Academics',
@@ -67,7 +67,8 @@ class CLanguages extends Translations {
           'personalInformation': 'Personal Information',
           'parentInformation': "Parent Information",
           'academicInformation': "Academic Information",
-          'section': "Section"
+          'section': "Section",
+          'logout': "Logout"
         },
         'am_ET': {
           'idHint': 'የተማሪ መታወቂያ',

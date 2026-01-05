@@ -5,7 +5,6 @@ import 'package:school_managment/common/widget/error/show_error.dart';
 import 'package:school_managment/util/image_constant.dart';
 import 'package:school_managment/util/routes/routes.dart';
 import 'package:school_managment/util/sizes.dart';
-import 'package:shimmer/shimmer.dart'; // Add this package to your pubspec.yaml
 
 class CAppBar extends StatelessWidget implements PreferredSizeWidget {
   CAppBar({
@@ -34,11 +33,11 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
-        toolbarHeight: showProfile ? kToolbarHeight + 10 : kToolbarHeight,
+        toolbarHeight: showProfile ? kToolbarHeight : kToolbarHeight,
         centerTitle: showGreeting ? false : true,
         automaticallyImplyLeading: true,
-        leadingWidth: 60,
-        leading: _buildLeading(context),
+        leadingWidth: 40,
+        leading: _buildLeadingMenu(context),
         title: _buildTitle(context),
         actions: showProfile ? _buildDefaultActions(context) : actions,
       ),
@@ -80,6 +79,25 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
   }
 
+  Widget? _buildLeadingMenu(BuildContext context) {
+    if (leading != null) {
+      return leading;
+    } else if (showLeading) {
+      return IconButton(
+        visualDensity: VisualDensity.compact,
+        padding: EdgeInsets.zero,
+        icon: const Icon(
+          Iconsax.menu_1,
+          size: 28,
+        ),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      );
+    }
+    return null;
+  }
+
   Widget? _buildLeading(BuildContext context) {
     if (leading != null) {
       return leading;
@@ -105,11 +123,11 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
         visualDensity: VisualDensity.compact,
         padding: EdgeInsets.zero,
         icon: const Icon(
-          Iconsax.menu_1,
-          size: 28,
+          Iconsax.search_normal_1,
+          size: 24,
         ),
         onPressed: () {
-          Scaffold.of(context).openDrawer();
+          showSuccessPopup("To be implemented");
         },
       ),
     ];

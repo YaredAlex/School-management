@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:school_managment/features/course/view/course.dart';
 import 'package:school_managment/features/home/view/widgets/home/card_icon_text.dart';
 import 'package:school_managment/features/library/view/library.dart';
+import 'package:school_managment/features/result/view/result.dart';
 import 'package:school_managment/features/time_table/view/time_table.dart';
 import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/image_constant.dart';
@@ -67,9 +68,9 @@ class Academics extends StatelessWidget {
                 CardIconText(
                   assetImage: CImageConstant.books,
                   backgroundColor: CColors.lightPurple,
-                  title: CTexts.library,
+                  title: CTexts.examResult,
                   onClick: () {
-                    Get.to(() => LibraryScreen());
+                    Get.to(() => ResultScreen());
                   },
                 ),
               ],

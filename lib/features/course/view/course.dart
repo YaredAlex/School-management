@@ -87,21 +87,22 @@ class CourseScreen extends StatelessWidget {
   Widget _buildCourseCard(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
+        // Phone: single column (width < 600)
+        // Tablet: double column (width >= 600)
+        int crossAxisCount = constraints.maxWidth < 600 ? 1 : 2;
         int itemCount = courseController.courses.length;
         int rowCount = (itemCount / crossAxisCount).ceil();
 
-        // Calculate the height of the grid
-        double aspectRatio = 1.0; // Assuming square images
-        double spacing = 16.0; // This should match your gridDelegate's spacing
+        double aspectRatio = crossAxisCount == 1 ? 2.5 : 1.3;
+        double spacing = 16.0;
         double itemHeight =
-            (constraints.maxWidth / crossAxisCount) * aspectRatio;
+            (constraints.maxWidth / crossAxisCount) / aspectRatio;
         double totalSpacing = (rowCount - 1) * spacing;
         double gridHeight = (itemHeight * rowCount) + totalSpacing;
 
         return GridView.builder(
-          padding: EdgeInsets.zero,
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           physics: NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
@@ -111,13 +112,16 @@ class CourseScreen extends StatelessWidget {
           ),
           itemCount: itemCount,
           itemBuilder: (context, index) {
+            final course = courseController.courses[index];
             return CourseCard(
-              courseId: courseController.courses[index].id,
+              courseId: course.id,
               onTap: (courseId) => courseController.toCourseResult(courseId),
-              courseName: '${courseController.courses[index].courseName}',
+              courseName: course.courseName,
               imgAsset: courseController.getCourseAssetImage(
-                  courseController.courses[index].imgUlr ??
-                      CImageConstant.courseIcon),
+                  course.imgUlr ?? CImageConstant.courseIcon),
+              courseCode: course.courseCode,
+              creditHours: course.creditHours,
+              teacherName: "Not provided",
             );
           },
         );
@@ -128,15 +132,14 @@ class CourseScreen extends StatelessWidget {
   Widget _buildLoadingCourse(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
-        int itemCount = 4;
+        int crossAxisCount = constraints.maxWidth < 600 ? 1 : 2;
+        int itemCount = 3;
         int rowCount = (itemCount / crossAxisCount).ceil();
 
-        // Calculate the height of the grid
-        double aspectRatio = 1.0; // Assuming square images
-        double spacing = 16.0; // This should match your gridDelegate's spacing
+        double aspectRatio = crossAxisCount == 1 ? 2.5 : 1.3;
+        double spacing = 16.0;
         double itemHeight =
-            (constraints.maxWidth / crossAxisCount) * aspectRatio;
+            (constraints.maxWidth / crossAxisCount) / aspectRatio;
         double totalSpacing = (rowCount - 1) * spacing;
         double gridHeight = (itemHeight * rowCount) + totalSpacing;
 

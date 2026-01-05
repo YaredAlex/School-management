@@ -10,7 +10,7 @@ class CTexts {
   static String get userName => 'userName'.tr;
   static String get userSub => 'userSub'.tr;
   static String get titleAcademics => "titleAcademics".tr;
-  static String get courseResult => "courseResult".tr;
+  static String get courseResult => "course".tr;
   static String get attendance => "attendance".tr;
   static String get timeTable => "timeTable".tr;
   static String get library => "library".tr;
@@ -68,4 +68,5 @@ class CTexts {
   static String get academicInformation => 'academicInformation'.tr;
   static String get personalInformation => 'personalInformation'.tr;
   static String get section => 'section'.tr;
+  static String get logout => 'logout'.tr;
 }

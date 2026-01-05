@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:school_managment/util/device/device.dart';
 
-/// A popup dialog to display error messages with a dismiss button
 class ErrorPopup extends StatelessWidget {
   final String message;
   final String buttonText;
@@ -15,7 +15,6 @@ class ErrorPopup extends StatelessWidget {
     this.title,
   }) : super(key: key);
 
-  /// Static method to show the error popup
   static void show(
     BuildContext context, {
     required String message,
@@ -48,7 +47,7 @@ class ErrorPopup extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: bgCard(),
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
@@ -81,11 +80,11 @@ class ErrorPopup extends StatelessWidget {
           if (title != null) ...[
             Text(
               title!,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red[800],
-              ),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red[800],
+                  ),
             ),
             const SizedBox(height: 8),
           ],
@@ -94,10 +93,9 @@ class ErrorPopup extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 16,
+                ),
           ),
           const SizedBox(height: 24),
 
@@ -128,7 +126,6 @@ class ErrorPopup extends StatelessWidget {
   }
 }
 
-/// An inline error message widget to display within the UI flow
 class InlineErrorMessage extends StatelessWidget {
   final String message;
   final IconData? icon;
@@ -197,57 +194,6 @@ class InlineErrorMessage extends StatelessWidget {
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Example of how to use these widgets
-class ErrorWidgetDemo extends StatelessWidget {
-  const ErrorWidgetDemo({Key? key}) : super(key: key);
-
-  void _showErrorPopup(BuildContext context) {
-    ErrorPopup.show(
-      context,
-      title: 'Connection Error',
-      message:
-          'Unable to connect to the server. Please check your internet connection and try again.',
-      onDismiss: () {
-        // Handle dismiss callback
-        debugPrint('Error popup dismissed');
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Error Widget Demo'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ElevatedButton(
-              onPressed: () => _showErrorPopup(context),
-              child: const Text('Show Error Popup'),
-            ),
-            const SizedBox(height: 20),
-            const InlineErrorMessage(
-              message:
-                  'Invalid email address format. Please enter a valid email address.',
-            ),
-            const SizedBox(height: 16),
-            InlineErrorMessage(
-              message: 'Your password must be at least 8 characters long.',
-              onDismiss: () {
-                debugPrint('Inline error dismissed');
-              },
-            ),
-          ],
         ),
       ),
     );

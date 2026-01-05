@@ -6,6 +6,7 @@ import 'package:school_managment/features/setting/view/widget/change_password.da
 import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/device/device.dart';
+import 'package:school_managment/util/routes/routes.dart';
 
 class SettingsPage extends StatelessWidget {
   final SettingsController controller = Get.put(SettingsController());
@@ -126,19 +127,19 @@ class SettingsPage extends StatelessWidget {
               ),
 
               // Update Profile Tile
-              ListTile(
-                leading: const Icon(Icons.person_outline),
-                title: Text(
-                  CTexts.updateProfile,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                subtitle: Text(CTexts.editYourPersonalAndContact),
-                trailing: const SizedBox(
-                  width: 30,
-                  child: Icon(Icons.arrow_forward_ios, size: 16),
-                ),
-                onTap: () => Get.toNamed('/updateProfile'),
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.person_outline),
+              //   title: Text(
+              //     CTexts.updateProfile,
+              //     style: Theme.of(context).textTheme.titleMedium,
+              //   ),
+              //   subtitle: Text(CTexts.editYourPersonalAndContact),
+              //   trailing: const SizedBox(
+              //     width: 30,
+              //     child: Icon(Icons.arrow_forward_ios, size: 16),
+              //   ),
+              //   onTap: () => Get.toNamed('/updateProfile'),
+              // ),
             ]),
             Divider(color: getDividerColor()),
             _buildSectionHeader(
@@ -163,43 +164,43 @@ class SettingsPage extends StatelessWidget {
               ),
 
               // Class Grade Tile
-              ListTile(
-                leading: const Icon(Icons.grade_outlined),
-                title: Text(
-                  CTexts.classGrade,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                trailing: Obx(() => SizedBox(
-                      width: 100,
-                      child: Text(
-                        controller.classGrade.value,
-                        textAlign: TextAlign.end,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    )),
-                onTap: () => controller.changeClassGrade(),
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.grade_outlined),
+              //   title: Text(
+              //     CTexts.classGrade,
+              //     style: Theme.of(context).textTheme.titleMedium,
+              //   ),
+              //   trailing: Obx(() => SizedBox(
+              //         width: 100,
+              //         child: Text(
+              //           controller.classGrade.value,
+              //           textAlign: TextAlign.end,
+              //           overflow: TextOverflow.ellipsis,
+              //         ),
+              //       )),
+              //   onTap: () => controller.changeClassGrade(),
+              // ),
             ]),
             Divider(color: getDividerColor()),
             _buildSectionHeader(title: CTexts.appInformation, context: context),
             _buildSettingsCard([
               // Privacy Policy Tile
-              ListTile(
-                leading: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: iconPadding),
-                  child: const Icon(Icons.policy_outlined),
-                ),
-                title: Text(
-                  CTexts.privacyPolicy,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                subtitle: Text(CTexts.reviewTermAndPolicy),
-                trailing: const SizedBox(
-                  width: 30,
-                  child: Icon(Icons.arrow_forward_ios, size: 16),
-                ),
-                onTap: () => Get.toNamed('/privacyPolicy'),
-              ),
+              // ListTile(
+              //   leading: Padding(
+              //     padding: EdgeInsets.symmetric(horizontal: iconPadding),
+              //     child: const Icon(Icons.policy_outlined),
+              //   ),
+              //   title: Text(
+              //     CTexts.privacyPolicy,
+              //     style: Theme.of(context).textTheme.titleMedium,
+              //   ),
+              //   subtitle: Text(CTexts.reviewTermAndPolicy),
+              //   trailing: const SizedBox(
+              //     width: 30,
+              //     child: Icon(Icons.arrow_forward_ios, size: 16),
+              //   ),
+              //   onTap: () => Get.toNamed('/privacyPolicy'),
+              // ),
 
               // Terms of Service Tile
               ListTile(
@@ -216,7 +217,7 @@ class SettingsPage extends StatelessWidget {
                   width: 30,
                   child: Icon(Icons.arrow_forward_ios, size: 16),
                 ),
-                onTap: () => Get.toNamed('/termsOfService'),
+                onTap: () => Get.toNamed(CRoutes.termAndService),
               ),
 
               // About Tile
@@ -233,7 +234,7 @@ class SettingsPage extends StatelessWidget {
                   width: 30,
                   child: Icon(Icons.arrow_forward_ios, size: 16),
                 ),
-                onTap: () => Get.toNamed('/about'),
+                onTap: () => Get.toNamed(CRoutes.about),
               ),
             ]),
             const SizedBox(height: 20),

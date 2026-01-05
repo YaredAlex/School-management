@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:school_managment/features/profile/controller/profile_controller.dart';
+import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:school_managment/util/device/device.dart';
 import 'package:school_managment/util/image_constant.dart';
@@ -100,7 +101,7 @@ class UserDetails extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(CSizes.mdRadius),
-        color: getContainerBg(),
+        color: bgWhite(),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -137,13 +138,15 @@ class UserDetails extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: Get.isDarkMode
-                  ? Colors.blueGrey.shade800
-                  : Colors.blue.shade50,
+                  ? Colors.blueGrey.shade900
+                  : Colors.indigo.shade50,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               item.icon,
-              color: Get.isDarkMode ? Colors.blue.shade200 : Colors.blue,
+              color: Get.isDarkMode
+                  ? CColors.primary.withAlpha(255)
+                  : CColors.primary,
               size: 20,
             ),
           ),
@@ -191,7 +194,7 @@ class UserDetails extends StatelessWidget {
               color: Colors.pink.shade100,
             ),
             child: profileController.imgUrl != null &&
-                    profileController.imgUrl != 'default-profile.png'
+                    profileController.imgUrl != CImageConstant.defaultProfilePic
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(60),
                     child: Image.network(
@@ -201,7 +204,10 @@ class UserDetails extends StatelessWidget {
                   )
                 : CircleAvatar(
                     radius: 28,
-                    backgroundImage: const AssetImage(CImageConstant.avatarF),
+                    backgroundImage: AssetImage(
+                        profileController.gender == "Male"
+                            ? CImageConstant.avatarM
+                            : CImageConstant.avatarF),
                     backgroundColor: Colors.pink.shade100,
                   ),
           ),
@@ -210,7 +216,7 @@ class UserDetails extends StatelessWidget {
 
           // Student Name
           Text(
-            "${profileController.name} ${profileController.fatherName}",
+            "${profileController.name}",
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),

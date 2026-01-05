@@ -23,10 +23,10 @@ void showSuccessPopup(String message) {
     snackPosition: SnackPosition.TOP,
     backgroundColor: Color.fromARGB(255, 176, 248, 195),
     colorText: Color.fromARGB(221, 0, 155, 67),
-    icon: const Icon(Icons.error_outline, color: Colors.grey),
+    icon: const Icon(Icons.check_circle_outline, color: Colors.green),
     margin: const EdgeInsets.all(16),
     borderRadius: 8,
     duration: const Duration(seconds: 3),
-    snackStyle: SnackStyle.FLOATING,
+    snackStyle: SnackStyle.GROUNDED,
   );
 }

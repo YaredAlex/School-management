@@ -1,7 +1,7 @@
 import 'package:school_managment/features/auth/model/teacher.dart';
 
 class ClassModel {
-  final int id;
+  final String id;
   final String className;
   final String section;
   final String academicYear;

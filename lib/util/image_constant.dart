@@ -1,7 +1,9 @@
 class CImageConstant {
   CImageConstant._();
-  static const String loginImg = "assets/images/school_img.jpg";
-  static const String logo = "assets/images/logo.png";
+  // static const String loginImg = "assets/images/school_img.jpg";
+  static const String loginImg = "assets/images/century_school_img.jpg";
+  static String logo = "assets/images/logo.png";
+  static String logo2 = "assets/images/logo2.png";
   static const String courseResult = "assets/icons/course_result.png";
   static const String attendance = "assets/icons/attendance.png";
   static const String timeTable = "assets/icons/time_table.png";
@@ -26,4 +28,5 @@ class CImageConstant {
   static const String courseIcon = "assets/images/book_icon.png";
   static const String avatarM = "assets/images/avatar_male.png";
   static const String avatarF = "assets/images/avatar_female.png";
+  static const String defaultProfilePic = 'default-profile.png';
 }

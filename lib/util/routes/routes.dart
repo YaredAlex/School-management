@@ -8,4 +8,6 @@ class CRoutes {
   static const library = '/library';
   static const splash = '/splash';
   static const setting = '/setting';
+  static const about = '/about';
+  static const termAndService = '/term-and-service';
 }

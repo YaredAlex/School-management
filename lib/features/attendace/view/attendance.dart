@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:school_managment/common/widget/appbar/app_bar.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
 import 'package:school_managment/features/attendace/controller/attendance_controller.dart';
+import 'package:school_managment/features/attendace/model/attendance_model.dart';
 import 'package:school_managment/util/constants/colors/colors.dart';
+import 'package:school_managment/util/device/device.dart';
 import 'package:school_managment/util/sizes.dart';
 import 'package:school_managment/util/constants/text/texts.dart';
 import 'package:shimmer/shimmer.dart';
@@ -30,9 +32,7 @@ class AttendanceScreen extends StatelessWidget {
             Expanded(
               child: Container(
                   decoration: BoxDecoration(
-                    color: Get.isDarkMode
-                        ? CColors.backgroundDark
-                        : CColors.backgroundPrimary,
+                    color: bgPrimaryShade(),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,33 +48,63 @@ class AttendanceScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       RefreshIndicator(
                         onRefresh: attendanceController.onRefresh,
-                        child: Obx(() => ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: CSizes.defaultSpace),
-                              shrinkWrap: true,
-                              physics: attendanceController.isLoading.value
-                                  ? const NeverScrollableScrollPhysics()
-                                  : const AlwaysScrollableScrollPhysics(),
-                              itemCount: attendanceController.isLoading.value
-                                  ? 3
-                                  : attendanceController.absentDates.length,
-                              itemBuilder: (context, index) {
-                                if (attendanceController.isLoading.value) {
-                                  return _loadingCard();
-                                }
-                                final absentDate =
-                                    attendanceController.absentDates[index];
-                                return Card(
-                                  elevation: 0,
-                                  margin: EdgeInsets.only(bottom: 8),
-                                  child: ListTile(
-                                    title: Text(absentDate['date']),
-                                    subtitle: Text(absentDate['reason']),
-                                    leading: Icon(Icons.calendar_today),
+                        child: Obx(
+                          () => ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: CSizes.defaultSpace),
+                            shrinkWrap: true,
+                            physics: attendanceController.isLoading.value
+                                ? const NeverScrollableScrollPhysics()
+                                : const AlwaysScrollableScrollPhysics(),
+                            itemCount: attendanceController.isLoading.value
+                                ? 3
+                                : attendanceController.attendance.length,
+                            itemBuilder: (context, index) {
+                              if (attendanceController.isLoading.value) {
+                                return _loadingCard();
+                              }
+
+                              // Get AttendanceModel
+                              final AttendanceModel model =
+                                  attendanceController.attendance[index];
+
+                              return Card(
+                                elevation: 0,
+                                margin: const EdgeInsets.only(bottom: 12),
+                                child: ListTile(
+                                  leading: const Icon(Icons.calendar_today),
+                                  title: Text(
+                                    model.date != null
+                                        ? "${model.date!.year}-${model.date!.month}-${model.date!.day}"
+                                        : "Unknown Date",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                );
-                              },
-                            )),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Absent count: ${model.absentCount ?? 0}"),
+                                      Text(
+                                          "Absent %: ${model.absentPercentage ?? 0}%"),
+                                      const SizedBox(height: 4),
+                                      // if (model.absentRecords != null &&
+                                      //     model.absentRecords!.isNotEmpty)
+                                      //   Text(
+                                      //     "Courses: ${model.absentRecords!.map((e) => e.course).join(', ')}",
+                                      //   )
+                                      // else
+                                      //   const Text("No absent courses"),
+                                    ],
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios,
+                                      size: 16),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   )),
@@ -85,8 +115,8 @@ class AttendanceScreen extends StatelessWidget {
 
   Widget _loadingCard() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: getBaseColor(),
+      highlightColor: getHighlightColor(),
       period: const Duration(milliseconds: 1500),
       child: Card(
         elevation: 0,
@@ -96,7 +126,7 @@ class AttendanceScreen extends StatelessWidget {
             width: double.infinity,
             height: 16,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: bgWhite(),
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -105,15 +135,15 @@ class AttendanceScreen extends StatelessWidget {
             height: 14,
             margin: const EdgeInsets.only(top: 6),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: bgWhite(),
               borderRadius: BorderRadius.circular(4),
             ),
           ),
           leading: Container(
             width: 24,
             height: 24,
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: bgWhite(),
               shape: BoxShape.circle,
             ),
           ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:school_managment/features/notifcation/model/notification_model.dart';
 
 class NotificationItem extends StatelessWidget {
-  final Map<String, dynamic> notification;
+  final NotificationModel notification;
   final Function onTap;
 
   NotificationItem({required this.notification, required this.onTap});
@@ -13,29 +14,29 @@ class NotificationItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: ListTile(
         leading: Icon(
-          _getIconForType(notification['type']),
-          color: _getColorForType(notification['type']),
+          _getIconForType(notification.type),
+          color: _getColorForType(notification.type),
         ),
         title: Text(
-          notification['title'],
+          notification.title,
           style: TextStyle(
             fontWeight:
-                notification['isRead'] ? FontWeight.normal : FontWeight.bold,
+                notification.isRead ? FontWeight.normal : FontWeight.bold,
           ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 4),
-            Text(notification['message']),
+            Text(notification.description),
             SizedBox(height: 4),
             Text(
-              'Date: ${notification['date']}',
+              'Date: ${notification.date}',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
         ),
-        trailing: notification['isRead']
+        trailing: notification.isRead
             ? null
             : Container(
                 width: 12,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:school_managment/common/widget/button/primary_button.dart';
 import 'package:school_managment/features/setting/controller/change_password.dart';
 
 class ChangePasswordPage extends StatelessWidget {
@@ -73,14 +74,17 @@ class ChangePasswordPage extends StatelessWidget {
                         controller.validateConfirmPassword(value),
                   )),
               const SizedBox(height: 24),
-              Obx(() => ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.changePassword,
-                    child: controller.isLoading.value
-                        ? const CircularProgressIndicator()
-                        : const Text('Change Password'),
-                  )),
+              Obx(
+                () => SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: PrimaryButton(
+                    text: "Change password",
+                    isLoading: controller.isLoading.value,
+                    onPressed: controller.changePassword,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

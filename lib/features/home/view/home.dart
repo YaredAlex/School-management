@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:school_managment/common/widget/appbar/app_bar.dart';
 import 'package:school_managment/common/widget/grdi_view/grid_view.dart';
 import 'package:school_managment/common/widget/header_section/header_section.dart';
+import 'package:school_managment/features/auth/controller/auth_controller.dart';
 import 'package:school_managment/features/home/controller/home/home_controller.dart';
 import 'package:school_managment/features/home/view/widgets/home/academics.dart';
 import 'package:school_managment/features/home/view/widgets/home/carousel.dart';
 import 'package:school_managment/features/home/view/widgets/home/notice_card.dart';
+import 'package:school_managment/features/message/view/messages.dart';
 import 'package:school_managment/features/setting/view/setting.dart';
 import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/image_constant.dart';
@@ -16,6 +18,7 @@ import 'package:school_managment/util/constants/text/texts.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final homeController = Get.put(HomeController());
+  final AuthController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -26,7 +29,7 @@ class HomeScreen extends StatelessWidget {
             height: CSizes.topBarHeight,
             childern: [
               CAppBar(
-                title: homeController.currentStudent.value?.name,
+                title: authController.currentStudent.value?.fullName,
                 showGreeting: true,
                 showProfile: true,
                 isLoading: homeController.isLoading.value,
@@ -40,69 +43,78 @@ class HomeScreen extends StatelessWidget {
                     ? CColors.backgroundDark
                     : CColors.backgroundPrimary,
               ),
-              child: ListView(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                physics: AlwaysScrollableScrollPhysics(),
-                children: [
-                  //Body of home
-                  //Carousel Image
-                  ImageCarousel(),
-                  //Acadamics
-                  const Academics(),
-                  const SizedBox(
-                    height: CSizes.defaultSpace,
-                  ),
-                  //Notice
-                  const HomeNotice(),
-                  const SizedBox(
-                    height: CSizes.defaultSpace,
-                  ),
-                  //parental service
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: CSizes.defaultSpace),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          CTexts.parentalService,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                          height: 160,
-                          child: CGrideView(
-                            column: 2,
-                            childrenHeight: 150,
-                            children: [
-                              ParentalCard(
-                                onTap: () {
-                                  Get.to(() => SettingsPage());
-                                },
-                                title: CTexts.setting,
-                                subtitle: CTexts.settingSubtitle,
-                                assetIcon: CImageConstant.settingIcon,
-                                backgroundColor: CColors.orange,
-                                circularBgColor: CColors.c2,
-                              ),
-                              ParentalCard(
-                                onTap: () {},
-                                title: CTexts.message,
-                                subtitle: CTexts.messageSubtitle,
-                                assetIcon: CImageConstant.messageIcon,
-                                backgroundColor: CColors.periwinkleBlue,
-                                circularBgColor: CColors.c1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              // add Refresh here
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await homeController.initializeStudent();
+                  await homeController.fetchGallerImage();
+                },
+                child: ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  children: [
+                    //Body of home
+                    //Carousel Image
+                    ImageCarousel(),
+                    //Acadamics
+                    const Academics(),
+                    const SizedBox(
+                      height: CSizes.defaultSpace,
                     ),
-                  )
-                ],
+                    //Notice
+                    // const HomeNotice(),
+                    // const SizedBox(
+                    //   height: CSizes.defaultSpace,
+                    // ),
+                    //parental service
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: CSizes.defaultSpace),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CTexts.parentalService,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SizedBox(
+                            height: 160,
+                            child: CGrideView(
+                              column: 2,
+                              childrenHeight: 150,
+                              children: [
+                                ParentalCard(
+                                  onTap: () {
+                                    Get.to(() => SettingsPage());
+                                  },
+                                  title: CTexts.setting,
+                                  subtitle: CTexts.settingSubtitle,
+                                  assetIcon: CImageConstant.settingIcon,
+                                  backgroundColor: CColors.orange,
+                                  circularBgColor: CColors.c2,
+                                ),
+                                ParentalCard(
+                                  onTap: () {
+                                    Get.to(() => MessageHistoryPage());
+                                  },
+                                  title: CTexts.message,
+                                  subtitle: CTexts.messageSubtitle,
+                                  assetIcon: CImageConstant.messageIcon,
+                                  backgroundColor: CColors.periwinkleBlue,
+                                  circularBgColor: CColors.c1,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

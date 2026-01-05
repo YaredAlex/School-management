@@ -5,11 +5,11 @@ import 'package:intl_phone_field/countries.dart';
 import 'package:school_managment/common/widget/button/primary_button.dart';
 import 'package:school_managment/common/widget/cliper/custom_cliper.dart';
 import 'package:school_managment/common/widget/error/error_dialog.dart';
-import 'package:school_managment/features/auth/view/forget_pass/view/foreget_pass.dart';
+import 'package:school_managment/features/auth/controller/sign_controller.dart';
+import 'package:school_managment/features/auth/view/foreget_pass.dart';
 import 'package:school_managment/util/image_constant.dart';
 import 'package:school_managment/util/sizes.dart';
 import 'package:school_managment/util/constants/text/texts.dart';
-import 'package:school_managment/features/auth/controller/auth_controller.dart';
 import 'package:school_managment/util/validator/input_validator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -19,7 +19,7 @@ class Signin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthController authController = Get.find();
+    SignInController signInController = Get.put(SignInController());
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -34,11 +34,11 @@ class Signin extends StatelessWidget {
               height: 350,
             ),
           ),
-          const SizedBox(
+          SizedBox(
             height: 150,
             width: 150,
             child: Image(
-              image: AssetImage(CImageConstant.logo),
+              image: AssetImage(CImageConstant.logo2),
             ),
           ),
           Padding(
@@ -58,28 +58,36 @@ class Signin extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    if (authController.errorMessage.value != null)
+                    if (signInController.errorMessage.value != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: InlineErrorMessage(
                             message:
-                                authController.errorMessage.value ?? "Error"),
+                                signInController.errorMessage.value ?? "Error"),
                       ),
                     const SizedBox(
                       height: CSizes.itemSpacing,
                     ),
                     IntlPhoneField(
                       decoration: InputDecoration(
+                        errorText: signInController.phoneError.value,
                         labelText: CTexts.phoneNumber,
                       ),
                       initialCountryCode: 'ET',
+
                       disableLengthCheck: true,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       countries: countries
                           .where((c) => c.code == 'ET')
-                          .toList(), // Ethiopia
+                          .toList(), // ETH
                       onChanged: (phone) {
-                        authController.phone = phone.completeNumber;
+                        if (phone.completeNumber == "") {
+                          signInController.phoneError.value =
+                              "Invalid phone number";
+                        } else {
+                          signInController.phoneError.value = null;
+                        }
+                        signInController.phone = phone.completeNumber;
                       },
                       validator: (phone) {
                         return validatePhoneNumber(phone?.number ?? '');
@@ -89,23 +97,23 @@ class Signin extends StatelessWidget {
                       height: CSizes.itemSpacing,
                     ),
                     TextFormField(
-                      onChanged: (value) => authController.password = value,
+                      onChanged: (value) => signInController.password = value,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Iconsax.password_check),
                         hintText: CTexts.passwordHint,
                         suffixIcon: IconButton(
                           icon: Icon(
-                            authController.obscureText.value
+                            signInController.obscureText.value
                                 ? Iconsax.eye_slash
                                 : Iconsax.eye,
                           ),
                           onPressed: () {
-                            authController.obscureText.value =
-                                !authController.obscureText.value;
+                            signInController.obscureText.value =
+                                !signInController.obscureText.value;
                           },
                         ),
                       ),
-                      obscureText: authController.obscureText.value,
+                      obscureText: signInController.obscureText.value,
                       validator: validatePassword,
                     ),
                     const SizedBox(
@@ -126,17 +134,23 @@ class Signin extends StatelessWidget {
                     ),
                     PrimaryButton(
                       text: CTexts.login,
-                      isLoading: authController.isLoading.value,
+                      isLoading: signInController.isLoading.value,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (authController.phone == null ||
-                              authController.phone == "") {
+                          if (signInController.phone == null ||
+                              signInController.phone == "") {
+                            signInController.phoneError.value =
+                                "Invalid phone number";
                           } else {
-                            authController.login(
-                              authController.phone.toString(),
-                              authController.password,
+                            signInController.phoneError.value = null;
+                            signInController.login(
+                              signInController.phone.toString(),
+                              signInController.password,
                             );
                           }
+                        } else {
+                          signInController.phoneError.value =
+                              "Invalid phone number";
                         }
                       },
                     )

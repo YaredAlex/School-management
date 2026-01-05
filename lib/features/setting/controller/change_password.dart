@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:school_managment/common/widget/popups/popup_service.dart';
+import 'package:school_managment/features/auth/controller/auth_controller.dart';
+import 'package:school_managment/util/services/api_controller.dart';
 
 class ChangePasswordController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -15,6 +18,7 @@ class ChangePasswordController extends GetxController {
   void toggleCurrentPasswordVisibility() => isCurrentPasswordVisible.toggle();
   void toggleNewPasswordVisibility() => isNewPasswordVisible.toggle();
   void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.toggle();
+  AuthController authController = Get.find();
 
   String? validatePassword(String? value, String errorMessage) {
     if (value == null || value.isEmpty) {
@@ -36,19 +40,22 @@ class ChangePasswordController extends GetxController {
   Future<void> changePassword() async {
     if (formKey.currentState!.validate()) {
       isLoading.value = true;
+      debugPrint("id of user ${authController.currentParent.value?.id}");
       try {
-        // Simulate API call
-        await Future.delayed(Duration(seconds: 2));
-        // Implement actual password change logic here
-        // For example, call an API to update the password
-        print('Changing password...');
-        print('Current Password: ${currentPasswordController.text}');
-        print('New Password: ${newPasswordController.text}');
+        final response = await ApiService().post(
+            "/api/user/${authController.currentParent.value?.id}/change-password/",
+            data: {
+              "new_password": newPasswordController.text.toString(),
+              "current_password": currentPasswordController.text.toString(),
+            });
 
-        Get.snackbar('Success', 'Password changed successfully');
-        Get.back(); // Return to previous screen
+        await PopupService.showSuccess(
+            title: "Sucesss",
+            message: "Password changed succesfully",
+            onDismiss: () {});
+        Get.back();
       } catch (e) {
-        Get.snackbar('Error', 'Failed to change password: $e');
+        PopupService.showError(title: "Failed", message: "$e");
       } finally {
         isLoading.value = false;
       }

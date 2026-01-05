@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:school_managment/common/widget/CircularImage/circular_image.dart';
 import 'package:school_managment/common/widget/drawer/drawer_controller.dart';
-import 'package:school_managment/common/widget/error/show_error.dart';
+import 'package:school_managment/common/widget/error/success_dialog.dart';
 import 'package:school_managment/features/navigation/controller/navigation_controller.dart';
-import 'package:school_managment/features/setting/view/setting.dart';
 import 'package:school_managment/util/constants/colors/colors.dart';
 import 'package:school_managment/util/constants/text/texts.dart';
+import 'package:school_managment/util/device/device.dart';
+import 'package:school_managment/util/image_constant.dart';
 import 'package:school_managment/util/routes/routes.dart';
 import 'package:shimmer/shimmer.dart'; // Add this package
 
@@ -34,10 +35,7 @@ class CDrawer extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
-        // Skeleton drawer header
         _buildSkeletonHeader(context),
-
-        // Skeleton menu items
         ...List.generate(5, (index) => _buildSkeletonListTile()),
       ],
     );
@@ -47,7 +45,7 @@ class CDrawer extends StatelessWidget {
   Widget _buildSkeletonHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 8),
-      height: 174, // Same height as DrawerHeader
+      height: 174,
       decoration: const BoxDecoration(
         color: CColors.primary,
       ),
@@ -155,21 +153,32 @@ class CDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CCircleAvatar(
-                  radius: 40,
-                ),
+                drawerController.currentStudent.value?.picture != null
+                    ? CCircleAvatar(
+                        radius: 40,
+                        imgUrl: drawerController.currentStudent.value?.picture,
+                      )
+                    : drawerController.currentStudent.value?.gender == "Female"
+                        ? const CCircleAvatar(
+                            radius: 40,
+                            defaultImage: CImageConstant.avatarF,
+                          )
+                        : const CCircleAvatar(
+                            radius: 40,
+                            defaultImage: CImageConstant.avatarM,
+                          ),
                 const SizedBox(
                   height: 8,
                 ),
                 Text(
-                  drawerController.currentStudent.value?.name ?? "",
+                  drawerController.currentStudent.value?.fullName ?? "",
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall!
                       .apply(color: Colors.white),
                 ),
                 Text(
-                  "Class ${drawerController.currentStudent.value?.classModel.className} | Section ${drawerController.currentStudent.value?.classModel.section}",
+                  "Class ${drawerController.currentStudent.value?.gradeName} | Section ${drawerController.currentStudent.value?.section_name}",
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -179,7 +188,12 @@ class CDrawer extends StatelessWidget {
             ),
           ),
         ),
-        ..._buildStudentList(),
+        Obx(() => Column(
+              children: _buildStudentList(context),
+            )),
+        Divider(
+          color: getDividerColor(),
+        ),
         Obx(
           () => ListTile(
             title: Text(CTexts.profile),
@@ -189,16 +203,6 @@ class CDrawer extends StatelessWidget {
               drawerController.changeRoute(CRoutes.profile);
             },
           ),
-        ),
-        ListTile(
-          title: Text(CTexts.examResult),
-          leading: const Icon(Iconsax.book),
-          selected: drawerController.selectedIndex.value == 2,
-          onTap: () {
-            drawerController.changeRoute(CRoutes.courses);
-            Get.back();
-            // Get.to(() => SettingsPage());
-          },
         ),
         ListTile(
           title: Text(CTexts.setting),
@@ -213,11 +217,11 @@ class CDrawer extends StatelessWidget {
           leading: const Icon(Iconsax.support),
           selected: drawerController.selectedIndex.value == 4,
           onTap: () {
-            Get.snackbar("TODO", "route to about");
+            Get.toNamed(CRoutes.about);
           },
         ),
         ListTile(
-          title: Text(CTexts.login),
+          title: Text(CTexts.logout),
           leading: const Icon(Iconsax.logout),
           selected: drawerController.selectedIndex.value == 4,
           onTap: () {
@@ -228,34 +232,58 @@ class CDrawer extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildStudentList() {
-    if (drawerController.students.value != null) {
+  List<Widget> _buildStudentList(BuildContext context) {
+    final students = drawerController.students.value;
+    final currentStudentId = drawerController.currentStudent.value?.id;
+
+    if (students != null && students.isNotEmpty) {
       return List.generate(
-        drawerController.students.value?.length ?? 1,
-        (index) => ListTile(
-          title: Text(drawerController.students.value?[index].name ?? "?"),
-          leading: const Icon(Iconsax.tick_circle),
-          selected: drawerController.selectedIndex.value == 0,
-          onTap: () {
-            if (drawerController.currentStudent.value?.id !=
-                drawerController.students.value?[index].id) {
-              drawerController.changeAccount(index);
-              showSuccessPopup(
-                  "Account changed to ${drawerController.students.value?[index].name}");
-            }
-          },
-        ),
+        students.length,
+        (index) {
+          final student = students[index];
+          final isActive = student.id == currentStudentId;
+
+          return ListTile(
+            leading: CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.blue.shade100,
+              child: Text(
+                _getInitials(drawerController.students.value?[index].fullName),
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            title: Text(student.fullName!),
+            trailing: isActive
+                ? const Text(
+                    "Active",
+                    style: TextStyle(
+                      color: CColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                : null,
+            selected: isActive,
+            onTap: () {
+              if (!isActive) {
+                drawerController.changeAccount(index);
+                SuccessDialog.show(
+                  context,
+                  message: "Account changed successfully!",
+                  buttonText: "Done",
+                );
+              }
+            },
+          );
+        },
       );
     }
-    return [
-      ListTile(
-        title: Text(CTexts.addAccount),
-        leading: const Icon(Iconsax.add),
-        selected: drawerController.selectedIndex.value == 0,
-        onTap: () {
-          Get.snackbar("TODO", "show add account ");
-        },
-      ),
-    ];
+    return [const Text("No student accounts available.")];
+  }
+
+  String _getInitials(String? name) {
+    if (name == null || name.isEmpty) return "?";
+    final parts = name.trim().split(" ");
+    if (parts.length == 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   }
 }

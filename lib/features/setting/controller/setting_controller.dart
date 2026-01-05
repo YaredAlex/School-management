@@ -11,7 +11,7 @@ class SettingsController extends GetxController {
   final RxBool emailNotifications = true.obs;
 
   // Account Settings
-  final RxString userRole = 'Student'.obs;
+  final RxString userRole = 'Parent'.obs;
 
   // Academic Settings
   final RxString academicYear = '2023-2024'.obs;
@@ -59,9 +59,8 @@ class SettingsController extends GetxController {
     language.value = prefs.getString('language') ?? 'en';
     pushNotifications.value = prefs.getBool('pushNotifications') ?? true;
     emailNotifications.value = prefs.getBool('emailNotifications') ?? true;
-    userRole.value = prefs.getString('userRole') ?? 'Student';
-    academicYear.value = prefs.getString('academicYear') ?? '2023-2024';
-    classGrade.value = prefs.getString('classGrade') ?? '10th Grade';
+    userRole.value = prefs.getString('userRole') ?? 'Parent';
+    academicYear.value = prefs.getString('academicYear') ?? '2025-2026';
   }
 
   Future<void> saveSettings() async {
@@ -72,7 +71,6 @@ class SettingsController extends GetxController {
     await prefs.setBool('emailNotifications', emailNotifications.value);
     await prefs.setString('userRole', userRole.value);
     await prefs.setString('academicYear', academicYear.value);
-    await prefs.setString('classGrade', classGrade.value);
   }
 
   void toggleDarkMode(bool value) {
@@ -83,19 +81,19 @@ class SettingsController extends GetxController {
 
   void togglePushNotifications(bool value) {
     pushNotifications.value = value;
-    // Implement push notification toggle logic here
+    // Implement push notification toggle
     saveSettings();
   }
 
   void toggleEmailNotifications(bool value) {
     emailNotifications.value = value;
-    // Implement email notification toggle logic here
+    // Implement email notification toggle
     saveSettings();
   }
 
   void changeUserRole(String value) {
     userRole.value = value;
-    // Implement user role change logic here
+    // Implement user role change logic
     saveSettings();
   }
 
@@ -105,7 +103,7 @@ class SettingsController extends GetxController {
         title: Text('Select Academic Year'),
         content: DropdownButton<String>(
           value: academicYear.value,
-          items: ['2022-2023', '2023-2024', '2024-2025'].map((String value) {
+          items: ['2024-2025'].map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
@@ -146,13 +144,6 @@ class SettingsController extends GetxController {
         ),
       ),
     );
-  }
-
-  void logout() {
-    // Implement logout logic here
-    // For example:
-    // AuthService.logout();
-    Get.offAllNamed('/login'); // Navigate to login page
   }
 
   void navigateToChangePassword() {

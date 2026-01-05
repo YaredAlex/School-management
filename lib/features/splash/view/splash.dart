@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:school_managment/common/widget/loading_indicator/minimal_loading.dart';
 import 'package:school_managment/features/auth/controller/auth_controller.dart';
 import 'package:school_managment/util/device/device.dart';
 import 'package:school_managment/util/image_constant.dart';
@@ -84,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen>
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: const Text(
-                  "Tech Academy",
+                  "Mella Innovation",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 28,
@@ -100,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: const Text(
-                  "Learning Without Limits",
+                  "Innovative software solutions",
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
@@ -111,18 +110,18 @@ class _SplashScreenState extends State<SplashScreen>
 
               const Spacer(flex: 2),
 
-              if (_showLoading) const MinimalLoadingIndicator(),
-              if (_showLoading) const SizedBox(height: 16),
-              if (_showLoading)
-                const Text(
-                  "Verifying your account",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.2,
-                  ),
-                ),
+              // if (_showLoading) const MinimalLoadingIndicator(),
+              // if (_showLoading) const SizedBox(height: 16),
+              // if (_showLoading)
+              //   const Text(
+              //     "Verifying your account",
+              //     style: TextStyle(
+              //       color: Colors.white70,
+              //       fontSize: 14,
+              //       fontWeight: FontWeight.w400,
+              //       letterSpacing: 0.2,
+              //     ),
+              //   ),
 
               const Spacer(flex: 1),
             ],

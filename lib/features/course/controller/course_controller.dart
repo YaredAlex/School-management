@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:school_managment/common/widget/error/show_error.dart';
-import 'package:school_managment/features/auth/controller/user_controller.dart';
+import 'package:school_managment/features/auth/controller/auth_controller.dart';
 import 'package:school_managment/features/course/controller/course_result_controller.dart';
 import 'package:school_managment/features/course/model/courses.dart';
 import 'package:school_managment/features/course/view/course_result.dart';
 import 'package:school_managment/util/constants/api_endpoints/api_endpoints.dart';
-import 'package:school_managment/util/controller/api_controller.dart';
 import 'package:school_managment/util/image_constant.dart';
+import 'package:school_managment/util/services/api_controller.dart';
 
 class CourseController extends GetxController {
-  RxString selectedCourse = 'Mathematics'.obs;
+  RxnString selectedCourse = RxnString(null);
   RxInt selectedSemester = 1.obs;
-  UserController userController = Get.find();
-  ApiController apiController = Get.find();
+  AuthController authController = Get.find();
   RxBool isLoading = RxBool(false);
   final RxList<Course> _courses = <Course>[].obs;
 
@@ -21,30 +20,28 @@ class CourseController extends GetxController {
   //fetch Student course list
   void onInit() {
     super.onInit();
-    fetchCourseList(userController.currentStudent.value?.classModel.id);
+    fetchCourseList(authController.currentStudent.value?.id);
   }
 
   Future<void> onRefresh() async {
-    fetchCourseList(userController.currentStudent.value?.classModel.id);
+    fetchCourseList(authController.currentStudent.value?.id);
   }
 
-  Future<void> fetchCourseList(int? classId) async {
-    if (classId == null) {
-      showErrorPopup("Class Id can not be null");
+  Future<void> fetchCourseList(int? studentId) async {
+    if (studentId == null) {
+      showErrorPopup("Studetn Id");
       return;
     }
     isLoading.value = true;
     try {
-      final response = await apiController.request(
-          endpoint: CAPIEndPoint.courseList(classId));
+      final response =
+          await ApiService().get(CAPIEndPoint.courseList(studentId));
       List<Map<String, dynamic>>? data =
-          (response['data'] as List<dynamic>).cast<Map<String, dynamic>>();
-      int? courseId = data[0]['id'];
-      if (courseId != null) {
-        _courses.value = [];
-      }
+          (response as List<dynamic>).cast<Map<String, dynamic>>();
+
+      // debugPrint("data $data");
+      _courses.value = [];
       for (var course in data) {
-        //check if course have image
         _courses.add(Course.fromJson(course));
       }
     } catch (e) {
@@ -56,46 +53,9 @@ class CourseController extends GetxController {
   }
 
   void toCourseResult(int courseId) {
-    Get.lazyPut(() => CourseResultController(courseId: courseId));
+    Get.lazyPut(() => CourseResultController(subjectId: courseId));
     Get.to(() => CourseResultScreen());
   }
-  // final List<Map<String, dynamic>> courses = [
-  //   {
-  //     'course': 'Mathematics',
-  //     'id': 1,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'Amharic',
-  //     'id': 2,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'History',
-  //     'id': 3,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'English',
-  //     'id': 4,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'Biology',
-  //     'id': 5,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'IT',
-  //     'id': 6,
-  //     'img': '',
-  //   },
-  //   {
-  //     'course': 'Chemistry',
-  //     'id': 6,
-  //     'img': '',
-  //   },
-  // ];
 
   String getCourseAssetImage(String course) {
     course = course.toLowerCase();

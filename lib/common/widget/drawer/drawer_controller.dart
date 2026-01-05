@@ -5,15 +5,13 @@ import 'package:school_managment/common/widget/confirmation/confirmation.dart';
 import 'package:school_managment/common/widget/error/error_dialog.dart';
 import 'package:school_managment/common/widget/loading_dialog/loading_dialog.dart';
 import 'package:school_managment/features/auth/controller/auth_controller.dart';
-import 'package:school_managment/features/auth/controller/user_controller.dart';
 import 'package:school_managment/features/auth/model/student.dart';
 
 class CDrawerController extends GetxController {
   RxInt selectedIndex = 0.obs;
-  UserController userController = Get.find();
   AuthController authController = Get.find();
-  Rxn<Student> get currentStudent => userController.currentStudent;
-  Rxn<List<Student>> get students => userController.students;
+  Rxn<StudentModel> get currentStudent => authController.currentStudent;
+  Rxn<List<StudentModel>> get students => authController.students;
   final drawingList = [
     {
       'title': "Profile",
@@ -22,7 +20,7 @@ class CDrawerController extends GetxController {
     }
   ];
   void changeRoute(String route) {
-    Get.back();
+    // Get.back(); causing error
     Get.toNamed(route);
   }
 
@@ -45,14 +43,15 @@ class CDrawerController extends GetxController {
     try {
       LoadingDialog.show(context, message: "Logging you out");
       await authController.logout();
-      LoadingDialog.hide(context);
+      // LoadingDialog.hide(context);
     } catch (e) {
       LoadingDialog.hide(context);
       ErrorPopup.show(context, message: "Error: ${e.toString()}");
+      debugPrint(e.toString());
     }
   }
 
   void changeAccount(int index) {
-    userController.currentStudent.value = userController.students.value?[index];
+    authController.currentStudent.value = authController.students.value?[index];
   }
 }

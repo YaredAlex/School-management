@@ -64,13 +64,13 @@ class GalleryScreen extends StatelessWidget {
                                               .titleLarge,
                                         ),
                                         const SizedBox(height: 4),
-                                        Text(
-                                          'Date: ${event['date']}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                        const SizedBox(height: 8),
+                                        // Text(
+                                        //   'Date: ${event['date']}',
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .bodySmall,
+                                        // ),
+                                        // const SizedBox(height: 8),
                                         Text(event['description']),
                                       ],
                                     ),

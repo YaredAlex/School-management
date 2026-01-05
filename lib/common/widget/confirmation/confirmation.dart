@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:school_managment/util/device/device.dart';
 
-/// A customizable confirmation dialog component.
-///
-/// This dialog presents a message to the user with confirmation and cancel options.
-/// It's fully customizable and provides a clean, modern design out of the box.
 class ConfirmationDialog extends StatelessWidget {
   final String title;
   final String message;
@@ -83,16 +80,15 @@ class ConfirmationDialog extends StatelessWidget {
                 cancelButtonText: cancelButtonText,
                 onConfirm: onConfirm != null
                     ? () {
-                        Navigator.of(context).pop(true);
+                        Get.back(closeOverlays: true);
                         onConfirm();
                       }
-                    : () => Navigator.of(context).pop(true),
+                    : () => Get.back(),
                 onCancel: onCancel != null
                     ? () {
-                        Navigator.of(context).pop(false);
                         onCancel();
                       }
-                    : () => Navigator.of(context).pop(false),
+                    : () => Get.back(closeOverlays: true),
                 isDestructive: isDestructive,
                 icon: icon,
                 iconColor: iconColor,
@@ -116,7 +112,7 @@ class ConfirmationDialog extends StatelessWidget {
       width: deviceWidth(context) * 0.8,
       constraints: BoxConstraints(maxWidth: deviceWidth(context) * 0.8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: bgCard(),
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
@@ -133,7 +129,6 @@ class ConfirmationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Title section
             Text(
               title,
               style: theme.textTheme.titleLarge?.copyWith(
